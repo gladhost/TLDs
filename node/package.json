@@ -1,0 +1,30 @@
+{
+  "name": "@gladhost/tlds",
+  "version": "1.0.0",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node buildTlds.ts && tsup",
+    "test": "node --test index.test.ts"
+  },
+  "keywords": [
+    "tld",
+    "tlds",
+    "tld list",
+    "tlds list"
+  ],
+  "author": "Gladhost",
+  "homepage": "https://github.com/gladhost/TLDs",
+  "license": "MPL 2.0",
+  "description": "library to retrieve and validate domain's TLD",
+  "devDependencies": {
+    "@types/node": "^24",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  }
+}
