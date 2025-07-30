@@ -1,0 +1,92 @@
+name: Lint Test
+
+on:
+  pull_request:
+  workflow_call:
+
+env:
+  NODE_VERSION: 24
+
+jobs:
+  lint:
+    name: Run Lint
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: MegaLinter
+        uses: oxsecurity/megalinter@v8
+        id: ml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENABLE_LINTERS: >
+            ACTION_ACTIONLINT,
+            PYTHON_BLACK,
+            PYTHON_PYLINT,
+            TYPESCRIPT_ESLINT,
+            TYPESCRIPT_PRETTIER
+          FLAVOR_SUGGESTIONS: false
+          FORMATTERS_DISABLE_ERRORS: false
+
+      - name: Archive production artifacts
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: MegaLinter reports
+          include-hidden-files: "true"
+          path: |
+            megalinter-reports
+            mega-linter.log
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v4
+
+      - name: Verify Docker and Docker Compose
+        run: docker compose --version
+
+      - name: Run node test
+        run: |
+         make download
+         docker compose run --rm node
+
+  commit-lint:
+    name: Commit Lint
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Commitlint
+        run: |
+          npm install --global @commitlint/{cli,config-conventional}
+          echo "module.exports = { extends: ['@commitlint/config-conventional'] };" > commitlint.config.js
+
+      - name: Validate commits
+        run: |
+          if [ "${{ github.event_name }}" == "push" ]; then
+            echo "Validate current commit"
+            npx commitlint --last --verbose
+          else
+            echo "Validate PR commit"
+            npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+          fi
