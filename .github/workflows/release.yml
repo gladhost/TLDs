@@ -45,8 +45,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Dependencies
-        run: |
-          npm install -g @semantic-release/{commit-analyzer,exec,git,github,release-notes-generator,npm} semantic-release-pypi
+        run: npm install --save-dev @semantic-release/{commit-analyzer,exec,git,github,release-notes-generator,npm} semantic-release-pypi
 
       - name: Create .releaserc.json
         run: |
