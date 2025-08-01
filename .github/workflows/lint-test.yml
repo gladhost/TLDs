@@ -23,12 +23,7 @@ jobs:
         id: ml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ENABLE_LINTERS: >
-            ACTION_ACTIONLINT,
-            PYTHON_BLACK,
-            PYTHON_PYLINT,
-            TYPESCRIPT_ESLINT,
-            TYPESCRIPT_PRETTIER
+          ENABLE_LINTERS: ACTION_ACTIONLINT,PYTHON_BLACK,PYTHON_PYLINT,TYPESCRIPT_ESLINT,TYPESCRIPT_PRETTIER
           FLAVOR_SUGGESTIONS: false
           FORMATTERS_DISABLE_ERRORS: false
 
@@ -56,10 +51,14 @@ jobs:
       - name: Verify Docker and Docker Compose
         run: docker compose --version
 
+      - name: Download tlds file
+        run: make download
+
       - name: Run node test
-        run: |
-         make download
-         docker compose run --rm node
+        run: docker compose run --rm node
+
+      - name: Run python test
+        run: docker compose run --rm python python3 tlds/test_main.py
 
   commit-lint:
     name: Commit Lint

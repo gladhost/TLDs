@@ -1,0 +1,3 @@
+include tlds/tlds.txt
+exclude tlds/test_main.py
+

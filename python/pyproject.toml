@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gladhost-tlds"
+version = "1.0.0"
+description = "library to retrieve and validate domain's TLD"
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["tld", "tld list", "tlds", "domain tld"]
+license = "MPL-2.0"
+classifiers = [
+    "Programming Language :: Python :: 3"
+]
+
+[tool.setuptools.package-data]
+gladhost_tlds = ["tlds.txt"]
