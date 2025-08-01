@@ -12,6 +12,9 @@ env:
 jobs:
   lint-test:
     name: Run Lint Test Workflow
+    permissions:
+      issues: write
+      pull-requests: write
     uses: ./.github/workflows/lint-test.yml
     secrets: inherit
 
