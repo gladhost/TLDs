@@ -44,6 +44,9 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v4
+
       - name: Install Dependencies
         run: npm install --save-dev @semantic-release/{commit-analyzer,exec,git,github,release-notes-generator,npm} semantic-release-pypi
 
@@ -78,7 +81,7 @@ jobs:
               [
                 "@semantic-release/exec",
                 {
-                  "prepareCmd": "make download"
+                  "prepareCmd": "make download && docker compose run --rm node"
                 }
               ]
             ]
