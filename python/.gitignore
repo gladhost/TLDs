@@ -1,5 +1,4 @@
 .venv
 dist
 gladhost_tlds.egg-info
-tlds/tlds.txt
 tlds/__pycache__
